@@ -6,7 +6,7 @@ import uuid
 
 import boto3
 dynamodb = boto3.resource('dynamodb')
-s3 = boto3.resource('s3')
+# s3 = boto3.resource('s3')
 
 
 def create(event, context):
@@ -19,7 +19,7 @@ def create(event, context):
     timestamp = int(time.time() * 1000)
 
     table = dynamodb.Table(os.environ['DYNAMODB_TABLE'])
-    bucket = s3.Bucket(os.environ['S3_BUCKET'])
+    # bucket = s3.Bucket(os.environ['S3_BUCKET'])
 
     header = upload(data['header'], bucket, 'header')
     screenshot = upload(data['screenshot'], bucket, 'screenshot')
@@ -28,8 +28,8 @@ def create(event, context):
         'id': str(uuid.uuid1()),
         'title': data['title']
         'text': data['text'],
-        'header': header,
-        'screenshot': screenshot,
+        'header': data['header'],
+        'screenshot': data['screenshot'],
         'createdAt': timestamp,
         'updatedAt': timestamp,
     }
@@ -43,7 +43,7 @@ def create(event, context):
 
     return response
 
-def upload(filename, bucket, type):
-    path = '/images/{}/{}'.format(type, filename)
-    s3.meta.client.upload_file(path, bucket, filename)
-    return filename
+# def upload(filename, bucket, type):
+#     path = '/images/{}/{}'.format(type, filename)
+#     s3.meta.client.upload_file(path, bucket, filename)
+#     return filename
